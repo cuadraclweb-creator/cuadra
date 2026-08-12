@@ -15,7 +15,7 @@
     --ok:#1a7a4f;--err:#C63C1B;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;background:var(--paper);}
+  html{scroll-behavior:smooth;background:var(--navy);}
   body{background:var(--paper);color:var(--navy);font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
   body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
@@ -170,7 +170,7 @@
   footer a{color:var(--muted-navy);}footer a:hover{color:var(--paper);}
 
   /* modales */
-  .overlay{position:fixed;inset:0;z-index:100;background:rgba(9,15,28,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .22s;}
+  .overlay{position:fixed;inset:0;height:100dvh;z-index:100;background:rgba(9,15,28,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .22s;overscroll-behavior:contain;}
   .overlay.on{display:flex;opacity:1;}
   .modal{background:var(--white);color:var(--navy);border-radius:14px;width:100%;max-width:480px;max-height:92vh;overflow:auto;padding:28px;position:relative;transform:translateY(14px) scale(.98);transition:transform .28s cubic-bezier(.2,.7,.2,1);border:1px solid var(--line);}
   .modal.modal-wide{max-width:560px;}
@@ -183,9 +183,11 @@
   .sch-alt{font-size:13px;color:var(--muted);margin-top:12px;}
   .sch-alt a{color:var(--coral-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px;}
   .cal-wrap{position:relative;height:600px;}
-  .cal-load{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);font-size:14px;z-index:0;}
-  .cal-wrap #cal-inline{position:absolute;inset:0;z-index:1;min-width:280px;}
-  .spinner-lg{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--coral);border-radius:50%;animation:spin .7s linear infinite;}
+  .cal-wrap #cal-inline{position:absolute;inset:0;min-width:280px;}
+  .modal-sched{display:flex;flex-direction:column;overflow:hidden;height:90dvh;max-height:90dvh;}
+  .modal-sched #schEmbed{flex:1;min-height:0;display:flex;flex-direction:column;}
+  .modal-sched .cal-wrap{flex:1;min-height:0;height:auto;}
+  .modal-sched .sch-alt{flex:0 0 auto;margin:8px 0 0;}
   .overlay.on .modal{transform:none;}
   .x{position:absolute;top:15px;right:15px;width:34px;height:34px;border-radius:7px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:17px;color:var(--muted);z-index:3;}
   .x:hover{color:var(--navy);}
@@ -446,7 +448,6 @@
       <div class="field" id="f-email"><label for="i-email">Tu correo <span class="req">*</span></label><input id="i-email" type="email" autocomplete="email" placeholder="tu@correo.cl"><div class="msg" aria-live="polite"></div></div>
       <div class="field" id="f-wsp"><label for="i-wsp">Tu WhatsApp <span class="req">*</span></label><input id="i-wsp" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..."><div class="msg" aria-live="polite"></div></div>
       <button class="submit" id="pvSubmit">Enviar y ver mi preview</button>
-      <p class="m-foot">Te contactamos por WhatsApp en menos de 24h.</p>
     </div>
     <div id="pvSuccess" class="success" style="display:none">
       <div class="tick">✓</div><h3>¡Perfecto, <span id="okName">crack</span>!</h3>
@@ -460,7 +461,7 @@
 
 <!-- SCHEDULING MODAL -->
 <div class="overlay" id="ovSched" role="dialog" aria-modal="true" aria-labelledby="schTitle">
-  <div class="modal modal-wide">
+  <div class="modal modal-wide modal-sched">
     <button class="x" data-close aria-label="Cerrar">✕</button>
     <div class="m-tag">Demo gratis · 15 min por videollamada</div>
     <h3 id="schTitle">Agenda tu demo</h3>
@@ -565,7 +566,7 @@ function openSched(prefill){
   const waHref=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Hola Cuadra, quiero agendar una demo gratis para ver un preview de mi sitio.')}`;
   if(sc && sc.indexOf('calendly.com')>-1){
     const url=schedUrl(prefill);
-    box.innerHTML=`<div class="cal-wrap"><div class="cal-load"><span class="spinner-lg"></span>Cargando calendario…</div><div id="cal-inline"></div></div><p class="sch-alt">¿No se ve el calendario? <a href="${url}" target="_blank" rel="noopener">ábrelo en una pestaña</a></p>`;
+    box.innerHTML=`<div class="cal-wrap"><div id="cal-inline"></div></div><p class="sch-alt">¿No se ve el calendario? <a href="${url}" target="_blank" rel="noopener">ábrelo en una pestaña</a></p>`;
     let tries=0;
     (function init(){
       if(window.Calendly && Calendly.initInlineWidget){
