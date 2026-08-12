@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuadra · Estudio digital para negocios locales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14223E;--navy-2:#1C3055;--paper:#F7F4EC;--white:#FCFBF7;
+    --coral:#F04E2A;--coral-deep:#C63C1B;--sand:#EAE0CC;
+    --muted:#6E6858;--muted-navy:#93A2C0;--line:#E0D8C6;--line-navy:rgba(255,255,255,.12);
+    --ok:#1a7a4f;--err:#C63C1B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--navy);font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  body.locked{overflow:hidden;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  h1,h2,h3,h4,.display{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;line-height:1.03;}
+  a{color:inherit;text-decoration:none;}button{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--coral);outline-offset:3px;}
+  .hl{position:relative;white-space:nowrap;}
+  .hl::before{content:"";position:absolute;left:-.05em;right:-.05em;bottom:.03em;height:.4em;background:var(--coral);transform:rotate(-1.4deg);z-index:0;border-radius:1px;}
+  .hl span{position:relative;z-index:1;}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(20,34,62,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-navy);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;color:var(--paper);letter-spacing:-.03em;display:flex;align-items:center;gap:9px;cursor:pointer;}
+  .logo svg{width:23px;height:23px;flex-shrink:0;display:block;}
+  footer .logo svg{width:20px;height:20px;}
+  .navlinks{display:flex;gap:26px;align-items:center;}
+  .navlinks a{color:var(--muted-navy);font-size:14.5px;font-weight:500;transition:color .15s;cursor:pointer;}
+  .navlinks a:hover{color:var(--paper);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;cursor:pointer;border:none;transition:transform .06s,background .18s,border-color .18s;}
+  .btn-coral{background:var(--coral);color:#fff;padding:11px 18px;border-radius:6px;}
+  .btn-coral:hover{background:var(--coral-deep);}
+  .btn-coral:active{transform:translateY(1px);}
+  .nav-cta{padding:9px 16px;font-size:14px;color:#fff!important;}
+  .hamb{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
+  .hamb span{display:block;width:24px;height:2px;background:var(--paper);transition:transform .25s,opacity .2s;}
+  .hamb[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamb[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .hamb[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media(max-width:820px){
+    .hamb{display:flex;}
+    .navlinks{position:fixed;inset:64px 0 auto 0;background:var(--navy);flex-direction:column;gap:0;padding:8px 0 16px;border-bottom:1px solid var(--line-navy);transform:translateY(-135%);transition:transform .3s cubic-bezier(.2,.7,.2,1);}
+    .navlinks.open{transform:translateY(0);}
+    .navlinks a{width:100%;padding:15px 24px;font-size:16px;}
+    .navlinks a.nav-cta{margin:8px 24px 0;width:auto;text-align:center;border-radius:6px;}
+  }
+
+  .hero{background:var(--navy);color:var(--paper);padding:72px 0 84px;position:relative;overflow:hidden;}
+  .hero::after{content:"";position:absolute;right:-160px;top:-120px;width:440px;height:440px;background:radial-gradient(circle,rgba(240,78,42,.18),transparent 68%);pointer-events:none;}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;position:relative;z-index:1;}
+  .eyebrow{font-size:13px;font-weight:600;color:var(--coral);margin-bottom:20px;display:flex;align-items:center;gap:9px;}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--coral);}
+  .hero h1{font-size:clamp(38px,6vw,62px);font-weight:700;}
+  .hero p.lede{font-size:18.5px;color:#D6DBE6;margin:24px 0 32px;max-width:490px;line-height:1.5;}
+  .hero-cta{display:flex;gap:13px;flex-wrap:wrap;align-items:center;}
+  .btn-ghost{background:transparent;color:var(--paper);border:1px solid var(--line-navy);padding:11px 18px;border-radius:6px;}
+  .btn-ghost:hover{border-color:var(--paper);}
+
+  /* hero offer card (reemplaza el mock) */
+  .offer{background:var(--white);color:var(--navy);border-radius:16px;padding:26px;box-shadow:0 26px 60px -26px rgba(0,0,0,.55);position:relative;}
+  .offer .ot{display:inline-block;font-family:'Bricolage Grotesque';font-weight:700;font-size:12px;letter-spacing:.04em;color:#fff;background:var(--coral);padding:5px 11px;border-radius:20px;margin-bottom:16px;}
+  .offer h3{font-size:24px;font-weight:700;line-height:1.1;}
+  .offer ul{list-style:none;margin:18px 0 22px;display:flex;flex-direction:column;gap:13px;}
+  .offer li{display:flex;gap:11px;align-items:flex-start;font-size:15px;color:var(--navy);}
+  .offer .ck{width:22px;height:22px;border-radius:50%;background:rgba(240,78,42,.12);color:var(--coral-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;margin-top:1px;}
+  .offer .btn-coral{width:100%;padding:13px;border-radius:9px;}
+  .offer .ofoot{text-align:center;font-size:12.5px;color:var(--muted);margin-top:12px;}
+  @media(max-width:840px){.hero .wrap{grid-template-columns:1fr;gap:40px;}.offer{max-width:420px;}}
+
+  .strip{background:var(--coral);color:#fff;}
+  .strip .wrap{padding:22px 24px;display:flex;align-items:center;gap:16px;}
+  .strip .big{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(30px,5vw,44px);line-height:1;}
+  .strip p{font-size:16px;font-weight:500;max-width:600px;}
+  @media(max-width:560px){.strip .wrap{flex-direction:column;align-items:flex-start;gap:8px;}}
+
+  section.block{padding:78px 0;}
+  .sec-head{max-width:640px;margin-bottom:44px;}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+  .sec-tag{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;color:var(--coral);margin-bottom:12px;}
+  h2.sec-title{font-size:clamp(28px,4.4vw,42px);font-weight:700;}
+  .sec-head p{font-size:17px;color:var(--muted);margin-top:14px;}
+
+  .svc{border-top:1px solid var(--line);}
+  .svc-row{display:grid;grid-template-columns:56px 1fr 1.1fr;gap:28px;align-items:start;padding:28px 0;border-bottom:1px solid var(--line);}
+  .svc-row .num{font-family:'Bricolage Grotesque';font-weight:700;font-size:20px;color:var(--coral);padding-top:3px;}
+  .svc-row h3{font-size:23px;font-weight:700;}
+  .svc-row .svc-desc{font-size:16px;color:var(--muted);}
+  .svc-row .svc-desc b{color:var(--navy);font-weight:600;}
+  @media(max-width:720px){.svc-row{grid-template-columns:34px 1fr;gap:12px 16px;}.svc-row .svc-desc{grid-column:2;}}
+
+  .how{background:var(--navy);color:var(--paper);}
+  .how .sec-tag{color:var(--coral);}.how h2.sec-title{color:var(--paper);}.how .sec-head p{color:var(--muted-navy);}
+  .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line-navy);border:1px solid var(--line-navy);border-radius:12px;overflow:hidden;}
+  .step{background:var(--navy);padding:30px 26px;}
+  .step .k{font-family:'Bricolage Grotesque';font-weight:800;font-size:40px;color:var(--coral);line-height:1;}
+  .step h4{font-weight:700;font-size:19px;margin:14px 0 8px;}
+  .step p{font-size:14.5px;color:var(--muted-navy);line-height:1.5;}
+  @media(max-width:720px){.steps3{grid-template-columns:1fr;}}
+
+  /* ====== PLANES ====== */
+  .price{background:var(--paper);}
+  .plans{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:stretch;max-width:820px;margin:0 auto;}
+  .plan .adds{border-top:1px dashed var(--line);margin-top:2px;padding-top:14px;margin-bottom:12px;}
+  .plan .adds-t{font-family:'Bricolage Grotesque';font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:9px;}
+  .plan .ai{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--navy);padding:6px 0;}
+  .plan .ai .pl{color:var(--coral-deep);font-weight:800;flex-shrink:0;line-height:1.4;}
+  .plan .ai.reco{}
+  .plan .adds .exd{color:var(--muted);font-weight:400;font-size:12.5px;}
+  .plan .adds-note{font-size:12px;color:var(--muted);margin:2px 0 18px;}
+  .tagreco{display:inline-block;background:transparent;color:var(--coral-deep);font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:1px 6px;border:1px solid var(--coral);border-radius:5px;vertical-align:middle;margin-left:2px;font-family:'Bricolage Grotesque';}
+  .plan{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:26px 24px;display:flex;flex-direction:column;position:relative;transition:transform .18s,box-shadow .18s;}
+  .plan:hover{transform:translateY(-4px);box-shadow:0 22px 44px -26px rgba(20,34,62,.4);}
+  .plan.feat{border-color:var(--coral);box-shadow:0 26px 54px -28px rgba(240,78,42,.55);}
+  .plan.feat::before{content:"El que más eligen";position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--coral);color:#fff;font-family:'Bricolage Grotesque';font-weight:700;font-size:11.5px;letter-spacing:.03em;padding:5px 14px;border-radius:20px;white-space:nowrap;}
+  .plan .pn{font-family:'Bricolage Grotesque';font-weight:700;font-size:19px;}
+  .plan .pd{font-size:13.5px;color:var(--muted);margin:4px 0 14px;min-height:42px;}
+  .pblock{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:8px;}
+  .prow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;}
+  .prow+.prow{border-top:1px solid var(--line);background:var(--paper);}
+  .prow .pl2{font-size:12px;color:var(--muted);font-weight:600;line-height:1.25;}
+  .prow .pv{font-family:'Bricolage Grotesque';font-weight:800;font-size:19px;color:var(--navy);white-space:nowrap;}
+  .prow .pv small{font-size:12px;color:var(--muted);font-weight:600;}
+  .plan ul{list-style:none;margin:16px 0 6px;display:flex;flex-direction:column;gap:10px;min-height:132px;}
+  .plan li{display:flex;gap:10px;font-size:14px;color:var(--navy);}
+  .plan li .ck{color:var(--coral-deep);font-weight:700;flex-shrink:0;}
+  .plan li.off{color:#B7AE9C;}.plan li.off .ck{color:#CFC7B6;}
+  .plan .btn{width:100%;padding:12px;border-radius:9px;}
+  .plan .btn-soft{background:var(--sand);color:var(--navy);}
+  .plan .btn-soft:hover{background:#DFD3BC;}
+  .extras{margin-top:28px;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:22px 24px;}
+  .extras .ex-t{font-family:'Bricolage Grotesque';font-weight:700;font-size:15px;margin-bottom:14px;}
+  .extras .ex-grid{display:grid;gap:11px;}
+  .extras .ex{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;font-size:14.5px;color:var(--navy);border-bottom:1px solid var(--line);padding-bottom:11px;}
+  .extras .ex:last-child{border-bottom:none;padding-bottom:0;}
+  .extras .ex b{font-family:'Bricolage Grotesque';font-weight:700;color:var(--coral-deep);white-space:nowrap;}
+  .extras .exd{color:var(--muted);font-weight:400;font-size:13px;}
+  .price .note{text-align:center;font-size:12.5px;color:var(--muted);margin-top:14px;}
+  .sim-wrap{text-align:center;margin-top:22px;}
+  .sim-brand{display:flex;align-items:center;gap:8px;font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;color:var(--navy);letter-spacing:-.03em;margin-bottom:12px;}
+  .sim-brand svg{width:21px;height:21px;flex-shrink:0;display:block;}
+  .sim-open{display:inline-flex;align-items:center;gap:8px;background:var(--white);color:var(--navy);border:1.5px solid var(--line);padding:12px 22px;border-radius:10px;font-family:'Bricolage Grotesque';font-weight:700;font-size:15px;cursor:pointer;transition:border-color .15s,background .15s,transform .06s;}
+  .sim-open:hover{border-color:var(--navy);background:var(--paper);}
+  .sim-open:active{transform:translateY(1px);}
+  .sim-open .sq{width:11px;height:11px;background:var(--coral);display:inline-block;}
+  .sim-open svg{width:18px;height:18px;flex-shrink:0;display:block;}
+  @media(max-width:820px){.plans{grid-template-columns:1fr;gap:22px;}}
+
+  .cta-final{background:var(--navy);color:var(--paper);}
+  .cta-final .wrap{padding:64px 24px;}
+  .cta-final h2{font-size:clamp(30px,5vw,50px);font-weight:800;max-width:640px;}
+  .cta-final p{font-size:18px;margin:16px 0 28px;max-width:520px;font-weight:500;}
+  .btn-dark{background:var(--navy);color:var(--paper);padding:14px 24px;border-radius:6px;font-size:16px;}
+  .btn-dark:hover{background:#0d1830;}
+  .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.75);padding:13px 22px;border-radius:6px;font-size:16px;}
+  .btn-outline:hover{background:rgba(255,255,255,.12);}
+
+  footer{background:var(--navy);color:var(--muted-navy);padding:40px 0;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+  footer .logo{font-size:19px;}
+  footer .fmeta{font-size:13.5px;}
+  footer a{color:var(--muted-navy);}footer a:hover{color:var(--paper);}
+
+  /* modales */
+  .overlay{position:fixed;inset:0;z-index:100;background:rgba(9,15,28,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .22s;}
+  .overlay.on{display:flex;opacity:1;}
+  .modal{background:var(--white);color:var(--navy);border-radius:14px;width:100%;max-width:480px;max-height:92vh;overflow:auto;padding:28px;position:relative;transform:translateY(14px) scale(.98);transition:transform .28s cubic-bezier(.2,.7,.2,1);border:1px solid var(--line);}
+  .modal.modal-wide{max-width:560px;}
+  .modal.modal-info{max-width:400px;}
+  .sch-embed iframe{width:100%;height:580px;border:none;border-radius:10px;margin-top:6px;}
+  .sch-ph{background:var(--paper);border:1px dashed var(--line);border-radius:12px;padding:26px 22px;text-align:center;margin-top:6px;}
+  .sch-ph .ic{font-size:30px;}
+  .sch-ph p{font-size:14px;color:var(--muted);margin:10px 0 18px;line-height:1.5;}
+  .sch-ph p b{color:var(--navy);}
+  .sch-alt{font-size:13px;color:var(--muted);margin-top:12px;}
+  .sch-alt a{color:var(--coral-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px;}
+  .overlay.on .modal{transform:none;}
+  .x{position:absolute;top:15px;right:15px;width:34px;height:34px;border-radius:7px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:17px;color:var(--muted);z-index:3;}
+  .x:hover{color:var(--navy);}
+  .m-tag{font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;color:var(--coral);}
+  .modal h3{font-size:24px;font-weight:700;margin:6px 0 4px;}
+  .modal .m-sub{font-size:14.5px;color:var(--muted);margin-bottom:18px;}
+  .pv-sim{background:rgba(240,78,42,.08);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:12.5px;color:var(--navy);margin-bottom:16px;line-height:1.4;}
+  .pv-sim b{font-family:'Bricolage Grotesque';}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
+  .field label .req{color:var(--coral);}
+  .field input,.field select{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:12px 13px;font-family:inherit;font-size:15px;color:var(--navy);}
+  .field select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:40px;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2314223E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+  .field select:focus{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F04E2A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");}
+  .field input::placeholder{color:#A69F8E;}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px rgba(240,78,42,.14);background:var(--white);}
+  .field.bad input{border-color:var(--err);}
+  .field .msg{font-size:12px;color:var(--err);margin-top:4px;min-height:14px;}
+  .submit{width:100%;background:var(--navy);color:var(--paper);padding:14px;border-radius:9px;font-family:'Bricolage Grotesque';font-weight:700;font-size:16px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;}
+  .submit:hover{background:#0d1830;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(247,244,236,.35);border-top-color:var(--paper);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .m-foot{font-size:12px;color:var(--muted);text-align:center;margin-top:11px;}
+  .m-foot a{color:var(--coral-deep);font-weight:600;}
+  .success{text-align:center;padding:6px 0;}
+  .success .tick{width:60px;height:60px;border-radius:50%;background:rgba(26,122,79,.12);color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:30px;margin:4px auto 14px;animation:pop .4s cubic-bezier(.2,1.4,.4,1);}
+  @keyframes pop{from{transform:scale(.4);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .success h3{margin-bottom:6px;}.success p{color:var(--muted);font-size:14.5px;margin-bottom:16px;}
+
+  /* simulador */
+  .cz-bases{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 18px;}
+  .cz-base{text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;color:var(--navy);position:relative;transition:border-color .15s,background .15s;}
+  .cz-base.sel{border-color:var(--coral);background:rgba(240,78,42,.06);}
+  .cz-base .t{font-family:'Bricolage Grotesque';font-weight:700;font-size:15px;}
+  .cz-base .p{font-size:13px;color:var(--coral-deep);font-weight:700;margin-top:3px;}
+  .cz-glbl{font-family:'Bricolage Grotesque';font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:16px 0 8px;}
+  .addon{display:flex;align-items:center;gap:13px;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left;color:var(--navy);}
+  .addon:last-child{border-bottom:none;}
+  .sw{width:40px;height:23px;border-radius:20px;background:#D8CFBD;position:relative;flex-shrink:0;transition:background .2s;}
+  .sw::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:transform .2s;}
+  .addon[aria-pressed="true"] .sw{background:var(--coral);}
+  .addon[aria-pressed="true"] .sw::after{transform:translateX(17px);}
+  .addon .an{flex:1;font-weight:600;font-size:14px;}
+  .addon .an .d{display:block;font-size:12px;color:var(--muted);font-weight:400;}
+  .qmark{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--sand);color:var(--navy);font-size:11px;font-weight:800;cursor:pointer;vertical-align:middle;margin-left:3px;user-select:none;flex-shrink:0;}
+  .qmark:hover{background:var(--coral);color:#fff;}
+  .tip{display:block;margin-top:7px;background:var(--navy);color:var(--paper);font-size:12px;line-height:1.45;padding:9px 11px;border-radius:8px;font-weight:400;}
+  .tip[hidden]{display:none;}
+  .addon .ap{font-family:'Bricolage Grotesque';font-weight:700;font-size:13.5px;color:var(--coral-deep);white-space:nowrap;}
+  .cz-inc{font-size:12.5px;color:var(--muted);background:var(--paper);border-radius:9px;padding:9px 12px;margin:14px 0;}
+  .cz-inc b{color:var(--navy);}
+  .cz-tot{display:flex;gap:12px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:16px 0;}
+  .cz-tot .c{flex:1;}
+  .cz-tot .cl{font-size:12px;color:var(--muted);}
+  .cz-tot .cv{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:var(--navy);}
+  .cz-tot .cv small{font-size:12px;color:var(--muted);font-weight:600;}
+  .cz-tot .c+.c{border-left:1px solid var(--line);padding-left:12px;}
+  @media(max-width:400px){.cz-tot{flex-direction:column;gap:0;}.cz-tot .c+.c{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:10px;margin-top:10px;}}
+  .qsum{text-align:left;background:var(--paper);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13.5px;}
+  .qsum .qr{display:flex;justify-content:space-between;gap:10px;padding:3px 0;color:var(--muted);}
+  .qsum .qr b{color:var(--navy);}
+  .qsum .qtot{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-weight:700;color:var(--navy);}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:var(--paper);padding:13px 20px;border-radius:9px;font-size:14px;font-weight:500;box-shadow:0 16px 40px -12px rgba(0,0,0,.5);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:88vw;}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}.reveal{opacity:1;transform:none;}}
+</style>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+</head>
+<body>
+
+<!-- ZONA EDITABLE: nombre "Cuadra" + contactos, abajo en el script -->
+
+<nav>
+  <div class="wrap">
+    <a class="logo" data-scroll="top"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="0" y="0" width="11" height="11" rx="3.2" fill="currentColor"/><circle cx="20.5" cy="5.5" r="5.5" fill="#F04E2A"/><rect x="0" y="15" width="11" height="11" rx="3.2" fill="currentColor"/><rect x="15" y="15" width="11" height="11" rx="3.2" fill="currentColor"/></svg>Cuadra</a>
+    <button class="hamb" id="hamb" aria-label="Abrir menú" aria-expanded="false" aria-controls="navlinks"><span></span><span></span><span></span></button>
+    <div class="navlinks" id="navlinks">
+      <a data-scroll="servicios">Servicios</a>
+      <a data-scroll="como">Cómo funciona</a>
+      <a data-scroll="precios">Precios</a>
+      <a class="btn btn-coral nav-cta" data-open-preview>Preview gratis</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Estudio digital para negocios locales · Santiago</div>
+      <h1>Que te encuentren en Google. Y que <span class="hl"><span>te elijan a ti</span></span>.</h1>
+      <p class="lede">Creamos el sitio web y la presencia online de tu negocio para que lleguen clientes nuevos, sea cual sea tu rubro. Te mostramos el resultado antes de que pagues un peso.</p>
+      <div class="hero-cta">
+        <button class="btn btn-coral" data-open-preview>Pide tu preview gratis →</button>
+        <button class="btn btn-ghost" data-scroll="precios">Ver planes</button>
+      </div>
+    </div>
+    <div>
+      <div class="offer">
+        <span class="ot">Preview gratis · 48h</span>
+        <h3>Tu sitio, listo en 48 horas.</h3>
+        <ul>
+          <li><span class="ck">✓</span><span>Diseño real de tu negocio, no una plantilla genérica</span></li>
+          <li><span class="ck">✓</span><span>Configurado para aparecer en Google desde el día uno</span></li>
+          <li><span class="ck">✓</span><span>Si no te convence, no pagas nada</span></li>
+        </ul>
+        <button class="btn btn-coral" data-open-preview>Quiero mi preview →</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="wrap">
+    <span class="big">93%</span>
+    <p>de las búsquedas en Chile pasan por Google. Si tu negocio no aparece, o aparece con una web vieja, esos clientes se van a la competencia.</p>
+  </div>
+</div>
+
+<section class="block" id="servicios">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Lo que hacemos</div>
+      <h2 class="sec-title">Todo para que te encuentren y te elijan.</h2>
+      <p>No vendemos "una página bonita". Vendemos que llegue gente nueva a tu negocio.</p>
+    </div>
+    <div class="svc reveal">
+      <div class="svc-row"><div class="num">01</div><h3>Sitios web</h3>
+        <div class="svc-desc">Rápidos, claros y hechos para <b>convertir</b>: que quien llega te escriba, compre o reserve. Listos en días, no en meses.</div></div>
+      <div class="svc-row"><div class="num">02</div><h3>Perfil de Google y reseñas</h3>
+        <div class="svc-desc">Apareces en el <b>mapa y en las búsquedas</b> de tu zona, con reseñas que generan confianza y te hacen elegible.</div></div>
+      <div class="svc-row"><div class="num">03</div><h3>SEO local</h3>
+        <div class="svc-desc">Posicionamos tu negocio para <b>"tu servicio + tu comuna"</b>. Es lo que trae clientes nuevos, mes a mes.</div></div>
+      <div class="svc-row svc-more"><div class="num">+</div><h3>Y más</h3>
+        <div class="svc-desc"><b>Diseño de marca y logo</b>, tienda online, reservas y agenda, asistente con IA y todo lo que tu negocio necesite para vender.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block how" id="como">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Cómo funciona</div>
+      <h2 class="sec-title">Ves el resultado antes de pagar.</h2>
+      <p>Nada de brief eterno ni promesas vagas. Primero lo ves, después decides.</p>
+    </div>
+    <div class="steps3 reveal">
+      <div class="step"><div class="k">01</div><h4>Te hacemos un preview gratis</h4><p>En 48h ves una versión real de tu sitio, con tu info y tu onda. Sin compromiso.</p></div>
+      <div class="step"><div class="k">02</div><h4>Lo revisas</h4><p>Ajustamos lo que quieras hasta que te encante. Tú tienes la última palabra.</p></div>
+      <div class="step"><div class="k">03</div><h4>Lo dejamos vivo</h4><p>Lo publicamos y nos encargamos de que sigas apareciendo en Google. Plan mensual simple, sin letra chica.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block price" id="precios">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="sec-tag">Precios</div>
+      <h2 class="sec-title">Dos formas de partir. Súmale lo que necesites.</h2>
+      <p>Un pago inicial para dejarlo listo, y una mensualidad simple que puedes potenciar cuando quieras.</p>
+    </div>
+    <div class="plans reveal">
+      <div class="plan">
+        <div class="pn">Sitio informativo</div>
+        <div class="pd">Para servicios que quieren verse profesionales y que los contacten.</div>
+        <div class="pblock">
+          <div class="prow"><span class="pl2">Inicial (una vez)</span><span class="pv">$390.000</span></div>
+          <div class="prow"><span class="pl2">Mantenimiento y service (pago mensual)</span><span class="pv">$45.000<small>/mes</small></span></div>
+        </div>
+        <ul>
+          <li><span class="ck">✓</span><span>Sitio a medida, hasta 5 secciones</span></li>
+          <li><span class="ck">✓</span><span>Optimizado para celular</span></li>
+          <li><span class="ck">✓</span><span>Carga rápida y segura (SSL)</span></li>
+          <li><span class="ck">✓</span><span>Mantenimiento, service y hosting</span></li>
+        </ul>
+        <div class="adds">
+          <div class="adds-t">Puedes sumar</div>
+          <div class="ai"><span class="pl">+</span><span>Diseño de marca y logo</span></div>
+          <div class="ai"><span class="pl">+</span><span>Botón de WhatsApp y formulario a tu correo</span></div>
+          <div class="ai"><span class="pl">+</span><span>Perfil de Google <span class="exd">(creación u optimización)</span></span></div>
+          <div class="ai"><span class="pl">+</span><span>Integración de reservas / agenda</span></div>
+          <div class="ai reco"><span class="pl">+</span><span>Asistente con IA <span class="qmark" role="button" tabindex="0" aria-label="Qué es el asistente con IA">?</span><span class="tip" hidden>Un chat con inteligencia artificial en tu sitio que responde y le recomienda tu servicio a tus clientes las 24 horas, aunque tú no estés. No se le escapa nadie.</span></span></div>
+          <div class="ai reco"><span class="pl">+</span><span>SEO local <span class="qmark" role="button" tabindex="0" aria-label="Qué es el SEO">?</span><span class="tip" hidden>El SEO es el trabajo de posicionar tu sitio en Google para que aparezca entre los primeros resultados cuando alguien busca lo que ofreces, por ejemplo "dentista en Providencia" o "arriendo de maquinaria en Maipú". Piensa cómo buscas tú: eliges entre los primeros que aparecen y casi nadie pasa a la segunda página. Estar arriba es, literalmente, la diferencia entre que te encuentren o que ese cliente se vaya con la competencia. Y a diferencia de la publicidad pagada, no pagas por cada clic: es tráfico que llega solo, se sostiene en el tiempo y se acumula mes a mes. Incluye optimizar tu sitio, tus textos y tu Perfil de Google, y medir los resultados para seguir subiendo.</span> <span class="tagreco">recomendado</span></span></div>
+        </div>
+        <p class="adds-note">Los valores de los extras los vemos en tu demo.</p>
+        <button class="btn btn-coral" data-open-preview>Agendar demo gratis</button>
+      </div>
+
+      <div class="plan">
+        <div class="pn">E-commerce</div>
+        <div class="pd">Para vender online, con pagos y despacho listos.</div>
+        <div class="pblock">
+          <div class="prow"><span class="pl2">Inicial (una vez)</span><span class="pv">$890.000</span></div>
+          <div class="prow"><span class="pl2">Mantenimiento y service (pago mensual)</span><span class="pv">$90.000<small>/mes</small></span></div>
+        </div>
+        <ul>
+          <li><span class="ck">✓</span><span>Tienda en Shopify, Tiendanube o WooCommerce</span></li>
+          <li><span class="ck">✓</span><span>Medios de pago y despacho configurados</span></li>
+          <li><span class="ck">✓</span><span>Perfil de Google incluido</span></li>
+          <li><span class="ck">✓</span><span>Mantenimiento, service y hosting</span></li>
+        </ul>
+        <div class="adds">
+          <div class="adds-t">Puedes sumar</div>
+          <div class="ai"><span class="pl">+</span><span>Diseño de marca y logo</span></div>
+          <div class="ai"><span class="pl">+</span><span>Botón de WhatsApp para pedidos</span></div>
+          <div class="ai"><span class="pl">+</span><span>Pop-up de descuento y captura de correos</span></div>
+          <div class="ai"><span class="pl">+</span><span>Reseñas de productos</span></div>
+          <div class="ai reco"><span class="pl">+</span><span>Asistente con IA <span class="qmark" role="button" tabindex="0" aria-label="Qué es el asistente con IA">?</span><span class="tip" hidden>Un chat con IA que responde las dudas de tus clientes y los guía a la compra las 24 horas, aunque tú no estés conectado.</span></span></div>
+          <div class="ai reco"><span class="pl">+</span><span>SEO para tu tienda <span class="qmark" role="button" tabindex="0" aria-label="Qué es el SEO">?</span><span class="tip" hidden>El SEO es el trabajo de posicionar tu sitio en Google para que aparezca entre los primeros resultados cuando alguien busca lo que ofreces, por ejemplo "dentista en Providencia" o "arriendo de maquinaria en Maipú". Piensa cómo buscas tú: eliges entre los primeros que aparecen y casi nadie pasa a la segunda página. Estar arriba es, literalmente, la diferencia entre que te encuentren o que ese cliente se vaya con la competencia. Y a diferencia de la publicidad pagada, no pagas por cada clic: es tráfico que llega solo, se sostiene en el tiempo y se acumula mes a mes. Incluye optimizar tu sitio, tus textos y tu Perfil de Google, y medir los resultados para seguir subiendo.</span> <span class="tagreco">recomendado</span></span></div>
+        </div>
+        <p class="adds-note">Los valores de los extras los vemos en tu demo.</p>
+        <button class="btn btn-coral" data-open-preview>Agendar demo gratis</button>
+      </div>
+    </div>
+    <p class="note">Valores referenciales en CLP. El precio final lo cerramos en tu demo, según lo que necesites.</p>
+    <div class="sim-wrap"><button class="sim-open" data-open-sim><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="0" y="0" width="11" height="11" rx="3.2" fill="currentColor"/><circle cx="20.5" cy="5.5" r="5.5" fill="#F04E2A"/><rect x="0" y="15" width="11" height="11" rx="3.2" fill="currentColor"/><rect x="15" y="15" width="11" height="11" rx="3.2" fill="currentColor"/></svg>Simulador de cotización</button></div>
+  </div>
+</section>
+
+<section class="cta-final" id="contacto">
+  <div class="wrap reveal">
+    <h2>¿Vemos cómo se vería tu negocio online?</h2>
+    <p>Te hacemos un preview gratis en 48 horas. Si te gusta, seguimos. Si no, te quedas con las ideas.</p>
+    <div class="hero-cta">
+      <button class="btn btn-coral" data-open-preview>Pide tu preview gratis</button>
+      <a class="btn btn-outline" id="ctaMail">Escríbenos un mail</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="0" y="0" width="11" height="11" rx="3.2" fill="currentColor"/><circle cx="20.5" cy="5.5" r="5.5" fill="#F04E2A"/><rect x="0" y="15" width="11" height="11" rx="3.2" fill="currentColor"/><rect x="15" y="15" width="11" height="11" rx="3.2" fill="currentColor"/></svg>Cuadra</div>
+    <div class="fmeta">Estudio digital para negocios locales · Santiago, Chile</div>
+    <div class="fmeta"><a id="footIg" href="#">Instagram</a> · <a id="footMail" href="#">correo</a></div>
+  </div>
+</footer>
+
+<!-- PREVIEW MODAL -->
+<div class="overlay" id="ovPreview" role="dialog" aria-modal="true" aria-labelledby="pvTitle">
+  <div class="modal">
+    <button class="x" data-close aria-label="Cerrar">✕</button>
+    <div id="pvForm">
+      <div class="m-tag">Preview gratis · 48h</div>
+      <h3 id="pvTitle">Tu preview gratis</h3>
+      <p class="m-sub">Mientras más nos cuentes, más a la medida queda. Toma un minuto.</p>
+      <p class="pv-sim" id="pvSimNote" style="display:none"></p>
+      <div class="field" id="f-nombre"><label for="i-nombre">Tu nombre <span class="req">*</span></label><input id="i-nombre" type="text" autocomplete="name" placeholder="Ej: Camila Rojas"><div class="msg" aria-live="polite"></div></div>
+      <div class="field" id="f-negocio"><label for="i-negocio">Tu negocio <span class="req">*</span></label><input id="i-negocio" type="text" placeholder="Ej: Clínica Dental Providencia"><div class="msg" aria-live="polite"></div></div>
+      <div class="field" id="f-rubro"><label for="i-rubro">Rubro <span class="req">*</span></label>
+        <select id="i-rubro"><option value="">Elige uno…</option><option>Salud / Dental</option><option>Belleza / Estética</option><option>Legal / Contable</option><option>Construcción / Remodelación</option><option>Restaurante / Café</option><option>Comercio / Tienda</option><option>Otros servicios</option></select><div class="msg" aria-live="polite"></div></div>
+      <div class="field" id="f-obj"><label for="i-obj">¿Qué quieres lograr? <span class="req">*</span></label>
+        <select id="i-obj"><option value="">Elige uno…</option><option>Que me lleguen más clientes</option><option>Recibir reservas / agendar horas</option><option>Vender online</option><option>Aparecer en Google</option><option>Verme más profesional</option></select><div class="msg" aria-live="polite"></div></div>
+      <div class="field"><label for="i-link">Tu web o Instagram actual <span style="color:var(--muted);font-weight:400">(si tienes)</span></label><input id="i-link" type="text" placeholder="Ej: instagram.com/tunegocio"></div>
+      <div class="field" id="f-email"><label for="i-email">Tu correo <span class="req">*</span></label><input id="i-email" type="email" autocomplete="email" placeholder="tu@correo.cl"><div class="msg" aria-live="polite"></div></div>
+      <div class="field" id="f-wsp"><label for="i-wsp">Tu WhatsApp <span class="req">*</span></label><input id="i-wsp" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..."><div class="msg" aria-live="polite"></div></div>
+      <button class="submit" id="pvSubmit">Enviar y ver mi preview</button>
+      <p class="m-foot">Te contactamos por WhatsApp en menos de 24h.</p>
+    </div>
+    <div id="pvSuccess" class="success" style="display:none">
+      <div class="tick">✓</div><h3>¡Perfecto, <span id="okName">crack</span>!</h3>
+      <p>Con esto preparamos tu preview. Último paso, y el importante: <b>agenda tu hora</b> y te lo mostramos en vivo por videollamada.</p>
+      <button class="submit" id="okSched">Agenda tu hora →</button>
+      <a class="submit" id="okWa" target="_blank" rel="noopener" style="background:var(--paper);color:var(--navy);border:1px solid var(--line);margin-top:9px">O envía tus datos por WhatsApp</a>
+      <p class="m-foot">¿Prefieres mail? <a href="#" id="okMail">Envíalo por correo</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULING MODAL -->
+<div class="overlay" id="ovSched" role="dialog" aria-modal="true" aria-labelledby="schTitle">
+  <div class="modal modal-wide">
+    <button class="x" data-close aria-label="Cerrar">✕</button>
+    <div class="m-tag">Demo gratis · 15 min por videollamada</div>
+    <h3 id="schTitle">Agenda tu demo</h3>
+    <p class="m-sub">Vemos juntos un preview de tu sitio y qué mejorar. Sin costo ni compromiso.</p>
+    <div id="schEmbed"></div>
+  </div>
+</div>
+
+<div class="overlay" id="ovSim" role="dialog" aria-modal="true" aria-labelledby="simTitle">
+  <div class="modal modal-wide">
+    <button class="x" data-close aria-label="Cerrar">✕</button>
+    <div class="sim-brand"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="0" y="0" width="11" height="11" rx="3.2" fill="currentColor"/><circle cx="20.5" cy="5.5" r="5.5" fill="#F04E2A"/><rect x="0" y="15" width="11" height="11" rx="3.2" fill="currentColor"/><rect x="15" y="15" width="11" height="11" rx="3.2" fill="currentColor"/></svg>Cuadra</div>
+    <div class="m-tag">Simulador de cotización</div>
+    <h3 id="simTitle">Calcula tu inversión</h3>
+    <p class="m-sub">Elige tu base y los extras que quieras. Es una estimación referencial; el valor final lo cerramos en tu demo.</p>
+    <div class="cz-glbl">Tu base</div>
+    <div class="cz-bases" id="simBase">
+      <button class="cz-base sel" data-base="info" aria-pressed="true"><div class="t">Sitio informativo</div><div class="p">$390.000 + $45.000/mes</div></button>
+      <button class="cz-base" data-base="ecom" aria-pressed="false"><div class="t">E-commerce</div><div class="p">$890.000 + $90.000/mes</div></button>
+    </div>
+    <div class="cz-glbl">Suma los extras</div>
+    <div id="simExtras"></div>
+    <div class="cz-tot">
+      <div class="c"><div class="cl">Pago inicial (una vez)</div><div class="cv" id="simOnce">$390.000</div></div>
+      <div class="c"><div class="cl">Mensualidad</div><div class="cv" id="simMon">$45.000<small>/mes</small></div></div>
+    </div>
+    <button class="submit" id="simSend">Conversar esta cotización por WhatsApp →</button>
+    <button class="submit" id="simSched" style="background:var(--paper);color:var(--navy);border:1px solid var(--line);margin-top:9px">Agendar demo gratis</button>
+    <p class="m-foot">Estimación referencial. El valor final se confirma en tu demo gratis.</p>
+  </div>
+</div>
+
+<div class="overlay" id="ovInfo" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+  <div class="modal modal-info">
+    <button class="x" data-close aria-label="Cerrar">✕</button>
+    <h3 id="infoTitle"></h3>
+    <p class="m-sub" id="infoBody" style="margin-bottom:2px"></p>
+    <button class="submit" data-close style="margin-top:16px">Entendido</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ═══ ZONA EDITABLE ═══ */
+const CONTACT={ whatsapp:"56975491557", email:"cuadra.cl.web@gmail.com", instagram:"https://instagram.com/tu_cuenta", scheduler:"https://calendly.com/cuadra-cl-web/30min" };
+/* scheduler: al pegar tu link de Calendly (calendly.com/...) el calendario queda EMBEBIDO dentro de la web. */
+/* scheduler: pega tu link de Google Calendar (Citas) o Calendly y aparece el calendario para agendar. */
+/* ═══ fin ═══ */
+
+document.getElementById('ctaMail').href=`mailto:${CONTACT.email}?subject=${encodeURIComponent('Quiero mi preview gratis')}`;
+document.getElementById('footIg').href=CONTACT.instagram;
+document.getElementById('footMail').href=`mailto:${CONTACT.email}`;
+
+const hamb=document.getElementById('hamb'),navlinks=document.getElementById('navlinks');
+function scrollToId(id){if(id==='top'){window.scrollTo({top:0,behavior:'smooth'});return;}const el=document.getElementById(id);if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-70,behavior:'smooth'});}
+document.querySelectorAll('[data-scroll]').forEach(a=>a.addEventListener('click',()=>{scrollToId(a.dataset.scroll);navlinks.classList.remove('open');hamb.setAttribute('aria-expanded','false');}));
+hamb.addEventListener('click',()=>{const o=navlinks.classList.toggle('open');hamb.setAttribute('aria-expanded',o);hamb.setAttribute('aria-label',o?'Cerrar menú':'Abrir menú');});
+
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* "?" abre un modal (no empuja el contenido) */
+function bindQmark(q){
+  const open=(e)=>{e.stopPropagation();e.preventDefault();
+    const t=q.nextElementSibling;
+    document.getElementById('infoTitle').textContent='¿'+(q.getAttribute('aria-label')||'Info')+'?';
+    document.getElementById('infoBody').textContent=(t&&t.classList.contains('tip'))?t.textContent:'';
+    openOv(document.getElementById('ovInfo'));
+  };
+  q.addEventListener('click',open);
+  q.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')open(e);});
+}
+document.querySelectorAll('.qmark').forEach(bindQmark);
+
+/* modal infra */
+let lastFocus=null;
+function openOv(ov){lastFocus=document.activeElement;ov.classList.add('on');document.body.classList.add('locked');const f=ov.querySelector('input,button,a');if(f)setTimeout(()=>f.focus(),60);ov.addEventListener('keydown',trapKey);}
+function closeOv(ov){ov.classList.remove('on');document.body.classList.remove('locked');ov.removeEventListener('keydown',trapKey);if(lastFocus)lastFocus.focus();}
+function trapKey(e){if(e.key==='Escape'){closeOv(e.currentTarget);return;}if(e.key!=='Tab')return;const els=[...e.currentTarget.querySelectorAll('input,select,button,a[href]')].filter(el=>el.offsetParent!==null);if(!els.length)return;const f=els[0],l=els[els.length-1];if(e.shiftKey&&document.activeElement===f){e.preventDefault();l.focus();}else if(!e.shiftKey&&document.activeElement===l){e.preventDefault();f.focus();}}
+document.querySelectorAll('.overlay').forEach(ov=>{ov.addEventListener('mousedown',e=>{if(e.target===ov)closeOv(ov);});ov.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeOv(ov)));});
+
+function setErr(id,m){const f=document.getElementById(id);f.classList.toggle('bad',!!m);f.querySelector('.msg').textContent=m||'';}
+function gv(id){return document.getElementById(id).value.trim();}
+
+/* ── AGENDAR DEMO ── */
+const ovSched=document.getElementById('ovSched');
+function schedUrl(pf){
+  let u=CONTACT.scheduler;
+  if(!pf) return u;
+  const q=[];
+  if(pf.name)q.push('name='+encodeURIComponent(pf.name));
+  const ca=pf.customAnswers||{};
+  Object.keys(ca).forEach(k=>{if(ca[k])q.push(k+'='+encodeURIComponent(ca[k]));});
+  if(q.length)u+=(u.indexOf('?')>-1?'&':'?')+q.join('&');
+  return u;
+}
+function openSched(prefill){
+  const box=document.getElementById('schEmbed');
+  const sc=CONTACT.scheduler;
+  const waHref=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Hola Cuadra, quiero agendar una demo gratis para ver un preview de mi sitio.')}`;
+  if(sc && sc.indexOf('calendly.com')>-1){
+    const url=schedUrl(prefill);
+    box.innerHTML=`<div id="cal-inline" style="min-width:280px;height:600px"></div><p class="sch-alt">¿No se ve el calendario? <a href="${url}" target="_blank" rel="noopener">ábrelo en una pestaña</a></p>`;
+    let tries=0;
+    (function init(){
+      if(window.Calendly && Calendly.initInlineWidget){
+        Calendly.initInlineWidget({url:url,parentElement:document.getElementById('cal-inline'),prefill:prefill||{}});
+      }else if(tries++<25){setTimeout(init,120);}
+    })();
+  }else if(sc){
+    box.innerHTML=`<div class="sch-ph"><div class="ic">📅</div><p>Elige el día y la hora que te acomode. Se agenda al instante y te llega una videollamada de <b>Google Meet</b>.</p><a class="submit" href="${sc}" target="_blank" rel="noopener">Elegir mi hora →</a><p class="sch-alt">o <a href="${waHref}" target="_blank" rel="noopener">agenda por WhatsApp</a></p></div>`;
+  }else{
+    box.innerHTML=`<div class="sch-ph"><div class="ic">📅</div><p>Aquí se conecta tu calendario. Al publicar, pegas tu link de <b>Calendly</b> y el cliente elige su hora sin salir de la web.</p><a class="submit" href="${waHref}" target="_blank" rel="noopener">Agendar por WhatsApp →</a></div>`;
+  }
+  openOv(ovSched);
+}
+document.querySelectorAll('[data-open-sched]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openSched();navlinks.classList.remove('open');hamb.setAttribute('aria-expanded','false');}));
+
+/* ── PREVIEW ── */
+const ovPreview=document.getElementById('ovPreview');
+let pendingSim=null;
+function openPreview(){
+  document.getElementById('pvForm').style.display='block';
+  document.getElementById('pvSuccess').style.display='none';
+  const note=document.getElementById('pvSimNote');
+  if(pendingSim){note.innerHTML='Tu cotización del simulador: <b>'+pendingSim+'</b>. La incluimos en tu demo.';note.style.display='block';}
+  else{note.style.display='none';}
+  openOv(ovPreview);
+}
+document.querySelectorAll('[data-open-preview]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();pendingSim=null;openPreview();navlinks.classList.remove('open');hamb.setAttribute('aria-expanded','false');}));
+
+const pvSubmit=document.getElementById('pvSubmit');
+pvSubmit.addEventListener('click',()=>{
+  const n=gv('i-nombre'),ne=gv('i-negocio'),ru=gv('i-rubro'),ob=gv('i-obj'),lk=gv('i-link'),w=gv('i-wsp');let ok=true;
+  setErr('f-nombre',n?'':'Escribe tu nombre');if(!n)ok=false;
+  setErr('f-negocio',ne?'':'¿Cómo se llama tu negocio?');if(!ne)ok=false;
+  setErr('f-rubro',ru?'':'Elige tu rubro');if(!ru)ok=false;
+  setErr('f-obj',ob?'':'Cuéntanos qué quieres lograr');if(!ob)ok=false;
+  const d=(w.match(/\d/g)||[]).length;setErr('f-wsp',d>=8?'':'Déjame un WhatsApp válido');if(d<8)ok=false;
+  if(!ok)return;
+  pvSubmit.disabled=true;pvSubmit.innerHTML='<span class="spinner"></span> Enviando…';
+  setTimeout(()=>{
+    let msg=`Hola Cuadra, quiero mi preview gratis.\n\n`
+      +`• Nombre: ${n}\n`
+      +`• Negocio: ${ne}\n`
+      +`• Rubro: ${ru}\n`
+      +`• Objetivo: ${ob}\n`
+      +(lk?`• Web/IG actual: ${lk}\n`:``)
+      +`• WhatsApp: ${w}`;
+    if(pendingSim)msg+=`\n\nCOTIZACIÓN DEL SIMULADOR\n• ${pendingSim}`;
+    document.getElementById('okName').textContent=n.split(' ')[0]||'crack';
+    document.getElementById('okWa').href=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(msg)}`;
+    document.getElementById('okMail').href=`mailto:${CONTACT.email}?subject=${encodeURIComponent('Preview gratis · '+ne)}&body=${encodeURIComponent(msg)}`;
+    document.getElementById('pvForm').style.display='none';document.getElementById('pvSuccess').style.display='block';
+    pvSubmit.disabled=false;pvSubmit.textContent='Enviar y ver mi preview';document.getElementById('okWa').focus();
+  },700);
+});
+document.getElementById('okMail').addEventListener('click',()=>closeOv(ovPreview));
+document.getElementById('okSched').addEventListener('click',()=>{
+  const ca={a1:gv('i-negocio'),a2:gv('i-rubro'),a3:gv('i-obj'),a4:gv('i-link')||'—'};
+  if(pendingSim)ca.a5=pendingSim;
+  const pf={name:gv('i-nombre'),customAnswers:ca};
+  closeOv(ovPreview);setTimeout(()=>openSched(pf),180);
+});
+/* ── SIMULADOR DE COTIZACIÓN ── */
+const simFmt=n=>'$'+Math.round(n).toLocaleString('es-CL');
+const SIM={
+  info:{once:390000,mensual:45000,extras:[
+    {id:'brand',label:'Diseño de marca y logo',type:'once',price:650000},
+    {id:'wa',label:'Botón de WhatsApp y formulario',type:'once',price:30000},
+    {id:'goog',label:'Perfil de Google',type:'once',price:99000},
+    {id:'res',label:'Integración de reservas / agenda',type:'once',price:150000},
+    {id:'seo',label:'SEO local',type:'mensual',price:150000},
+    {id:'ia',label:'Asistente con IA',type:'mensual',price:30000},
+  ]},
+  ecom:{once:890000,mensual:90000,extras:[
+    {id:'brand',label:'Diseño de marca y logo',type:'once',price:650000},
+    {id:'wa',label:'Botón de WhatsApp para pedidos',type:'once',price:30000},
+    {id:'pop',label:'Pop-up de descuento y captura de correos',type:'once',price:60000},
+    {id:'rev',label:'Reseñas de productos',type:'once',price:60000},
+    {id:'ia',label:'Asistente con IA',type:'mensual',price:30000},
+    {id:'seo',label:'SEO para tu tienda',type:'mensual',price:150000},
+  ]},
+};
+let simBase='info',simSel=new Set();
+function simRender(){
+  const box=document.getElementById('simExtras');box.innerHTML='';
+  SIM[simBase].extras.forEach(e=>{
+    const b=document.createElement('button');b.className='addon';b.type='button';b.setAttribute('aria-pressed',simSel.has(e.id)?'true':'false');
+    b.innerHTML=`<span class="sw"></span><span class="an">${e.label}<span class="d">${e.type==='once'?'pago único':'cargo mensual'}</span></span><span class="ap">+${simFmt(e.price)}${e.type==='mensual'?'/mes':''}</span>`;
+    b.addEventListener('click',()=>{simSel.has(e.id)?simSel.delete(e.id):simSel.add(e.id);b.setAttribute('aria-pressed',simSel.has(e.id)?'true':'false');simCompute();});
+    box.appendChild(b);
+  });
+}
+function simCompute(){
+  let o=SIM[simBase].once,m=SIM[simBase].mensual;
+  SIM[simBase].extras.forEach(e=>{if(simSel.has(e.id)){e.type==='once'?o+=e.price:m+=e.price;}});
+  document.getElementById('simOnce').textContent=simFmt(o);
+  document.getElementById('simMon').innerHTML=simFmt(m)+'<small>/mes</small>';
+}
+document.querySelectorAll('#simBase .cz-base').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('#simBase .cz-base').forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-pressed','false');});
+  c.classList.add('sel');c.setAttribute('aria-pressed','true');
+  simBase=c.dataset.base;simSel=new Set();simRender();simCompute();
+}));
+const ovSim=document.getElementById('ovSim');
+function openSim(){
+  simBase='info';simSel=new Set();
+  document.querySelectorAll('#simBase .cz-base').forEach(x=>{const on=x.dataset.base==='info';x.classList.toggle('sel',on);x.setAttribute('aria-pressed',on);});
+  simRender();simCompute();openOv(ovSim);
+}
+document.querySelectorAll('[data-open-sim]').forEach(b=>b.addEventListener('click',openSim));
+document.getElementById('simSched').addEventListener('click',()=>{
+  let o=SIM[simBase].once,m=SIM[simBase].mensual;const parts=[];
+  SIM[simBase].extras.forEach(e=>{if(simSel.has(e.id)){parts.push(e.label);e.type==='once'?o+=e.price:m+=e.price;}});
+  const baseName=simBase==='info'?'Sitio informativo':'E-commerce';
+  pendingSim=`${baseName}${parts.length?' + '+parts.join(', '):''} (inicial ${simFmt(o)}, mensual ${simFmt(m)}/mes)`;
+  closeOv(ovSim);setTimeout(()=>openPreview(),180);
+});
+document.getElementById('simSend').addEventListener('click',()=>{
+  let o=SIM[simBase].once,m=SIM[simBase].mensual;const onceIt=[],monIt=[];
+  SIM[simBase].extras.forEach(e=>{if(simSel.has(e.id)){
+    if(e.type==='once'){o+=e.price;onceIt.push(`• ${e.label}: ${simFmt(e.price)}`);}
+    else{m+=e.price;monIt.push(`• ${e.label}: ${simFmt(e.price)}/mes`);}
+  }});
+  const baseName=simBase==='info'?'Sitio informativo':'E-commerce';
+  let txt=`Hola Cuadra, esta es mi cotización simulada:\n\n`
+    +`PLAN BASE\n• ${baseName}: ${simFmt(SIM[simBase].once)} inicial + ${simFmt(SIM[simBase].mensual)}/mes\n`;
+  if(onceIt.length)txt+=`\nEXTRAS (pago único)\n`+onceIt.join('\n')+`\n`;
+  if(monIt.length)txt+=`\nEXTRAS (mensuales)\n`+monIt.join('\n')+`\n`;
+  txt+=`\nTOTAL\n• Pago inicial: ${simFmt(o)}\n• Mensualidad: ${simFmt(m)}/mes\n\nQuiero agendar una demo.`;
+  window.open(`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(txt)}`,'_blank');
+});
+</script>
+</body>
+</html>
