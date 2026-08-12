@@ -17,7 +17,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;background:var(--navy);}
   body{background:var(--paper);color:var(--navy);font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
-  body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
+  body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden;background:var(--navy);}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
   h1,h2,h3,h4,.display{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;line-height:1.03;}
   a{color:inherit;text-decoration:none;}button{font-family:inherit;}
@@ -164,10 +164,16 @@
   .btn-outline:hover{background:rgba(255,255,255,.12);}
 
   footer{background:var(--navy);color:var(--muted-navy);padding:40px 0;}
-  footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  footer .foot-brand{display:flex;flex-direction:column;gap:10px;}
   footer .logo{font-size:19px;}
   footer .fmeta{font-size:13.5px;}
+  footer .foot-links{display:flex;flex-direction:column;gap:12px;}
+  footer .foot-link{display:inline-flex;align-items:center;gap:10px;color:var(--muted-navy);font-size:14.5px;font-weight:500;transition:color .15s;}
+  footer .foot-link:hover{color:var(--paper);}
+  footer .foot-link svg{flex-shrink:0;}
   footer a{color:var(--muted-navy);}footer a:hover{color:var(--paper);}
+  @media(max-width:560px){footer .wrap{flex-direction:column;gap:22px;}}
 
   /* modales */
   .overlay{position:fixed;inset:0;height:100dvh;z-index:100;background:rgba(9,15,28,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .22s;overscroll-behavior:contain;}
@@ -416,16 +422,21 @@
     <p>Te hacemos un preview gratis en 48 horas. Si te gusta, seguimos. Si no, te quedas con las ideas.</p>
     <div class="hero-cta">
       <button class="btn btn-coral" data-open-preview>Pide tu preview gratis</button>
-      <a class="btn btn-outline" id="ctaMail">Escríbenos un mail</a>
+      <a class="btn btn-outline" id="ctaWa" target="_blank" rel="noopener">¿Dudas? Escríbenos por WhatsApp</a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <div class="logo"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="0" y="0" width="11" height="11" rx="3.2" fill="currentColor"/><circle cx="20.5" cy="5.5" r="5.5" fill="#F04E2A"/><rect x="0" y="15" width="11" height="11" rx="3.2" fill="currentColor"/><rect x="15" y="15" width="11" height="11" rx="3.2" fill="currentColor"/></svg>Cuadra</div>
-    <div class="fmeta">Estudio digital para negocios locales · Santiago, Chile</div>
-    <div class="fmeta"><a id="footIg" href="#">Instagram</a> · <a id="footMail" href="#">correo</a></div>
+    <div class="foot-brand">
+      <div class="logo"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="0" y="0" width="11" height="11" rx="3.2" fill="currentColor"/><circle cx="20.5" cy="5.5" r="5.5" fill="#F04E2A"/><rect x="0" y="15" width="11" height="11" rx="3.2" fill="currentColor"/><rect x="15" y="15" width="11" height="11" rx="3.2" fill="currentColor"/></svg>Cuadra</div>
+      <div class="fmeta">Estudio digital para negocios locales · Santiago, Chile</div>
+    </div>
+    <div class="foot-links">
+      <a class="foot-link" id="footWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" width="19" height="19" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.15c-1.53 0-3.03-.41-4.34-1.19l-.31-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 01-1.26-4.34c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 012.41 5.82c0 4.54-3.69 8.24-8.24 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.16 1.75 2.67 4.25 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>+56 9 7549 1557</a>
+      <a class="foot-link" id="footMail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="19" height="19" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>cuadra.cl.web@gmail.com</a>
+    </div>
   </div>
 </footer>
 
@@ -453,8 +464,7 @@
       <div class="tick">✓</div><h3>¡Perfecto, <span id="okName">crack</span>!</h3>
       <p>Con esto preparamos tu preview. Último paso, y el importante: <b>agenda tu hora</b> y te lo mostramos en vivo por videollamada.</p>
       <button class="submit" id="okSched">Agenda tu hora →</button>
-      <a class="submit" id="okWa" target="_blank" rel="noopener" style="background:var(--paper);color:var(--navy);border:1px solid var(--line);margin-top:9px">O envía tus datos por WhatsApp</a>
-      <p class="m-foot">¿Prefieres mail? <a href="#" id="okMail">Envíalo por correo</a></p>
+      <p class="m-foot">¿Tienes una duda? <a href="#" id="okWa">Escríbenos por WhatsApp</a></p>
     </div>
   </div>
 </div>
@@ -488,8 +498,8 @@
       <div class="c"><div class="cl">Pago inicial (una vez)</div><div class="cv" id="simOnce">$390.000</div></div>
       <div class="c"><div class="cl">Mensualidad</div><div class="cv" id="simMon">$45.000<small>/mes</small></div></div>
     </div>
-    <button class="submit" id="simSend">Conversar esta cotización por WhatsApp →</button>
-    <button class="submit" id="simSched" style="background:var(--paper);color:var(--navy);border:1px solid var(--line);margin-top:9px">Agendar demo gratis</button>
+    <button class="submit" id="simSched">Agendar demo gratis →</button>
+    <button class="submit" id="simSend" style="background:var(--paper);color:var(--navy);border:1px solid var(--line);margin-top:9px">¿Dudas? Escríbenos por WhatsApp</button>
     <p class="m-foot">Estimación referencial. El valor final se confirma en tu demo gratis.</p>
   </div>
 </div>
@@ -512,8 +522,9 @@ const CONTACT={ whatsapp:"56975491557", email:"cuadra.cl.web@gmail.com", instagr
 /* scheduler: pega tu link de Google Calendar (Citas) o Calendly y aparece el calendario para agendar. */
 /* ═══ fin ═══ */
 
-document.getElementById('ctaMail').href=`mailto:${CONTACT.email}?subject=${encodeURIComponent('Quiero mi preview gratis')}`;
-document.getElementById('footIg').href=CONTACT.instagram;
+const waDudas=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Hola Cuadra, tengo una consulta sobre sus servicios.')}`;
+document.getElementById('ctaWa').href=waDudas;
+document.getElementById('footWa').href=waDudas;
 document.getElementById('footMail').href=`mailto:${CONTACT.email}`;
 
 const hamb=document.getElementById('hamb'),navlinks=document.getElementById('navlinks');
@@ -540,9 +551,9 @@ document.querySelectorAll('.qmark').forEach(bindQmark);
 /* modal infra */
 let lastFocus=null;
 let lockScroll=0;
-function openOv(ov){lastFocus=document.activeElement;lockScroll=window.scrollY||window.pageYOffset||0;ov.classList.add('on');document.body.style.top=`-${lockScroll}px`;document.body.classList.add('locked');const f=ov.querySelector('input,button,a');if(f)setTimeout(()=>f.focus(),60);ov.addEventListener('keydown',trapKey);}
-function closeOv(ov){ov.classList.remove('on');document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,lockScroll);ov.removeEventListener('keydown',trapKey);if(lastFocus)lastFocus.focus();}
-function trapKey(e){if(e.key==='Escape'){closeOv(e.currentTarget);return;}if(e.key!=='Tab')return;const els=[...e.currentTarget.querySelectorAll('input,select,button,a[href]')].filter(el=>el.offsetParent!==null);if(!els.length)return;const f=els[0],l=els[els.length-1];if(e.shiftKey&&document.activeElement===f){e.preventDefault();l.focus();}else if(!e.shiftKey&&document.activeElement===l){e.preventDefault();f.focus();}}
+function openOv(ov){lastFocus=document.activeElement;lockScroll=window.scrollY||window.pageYOffset||0;ov.classList.add('on');document.body.style.top=`-${lockScroll}px`;document.body.classList.add('locked');const f=ov.querySelector('input,button,a');if(f)setTimeout(()=>f.focus({preventScroll:true}),60);ov.addEventListener('keydown',trapKey);}
+function closeOv(ov){ov.classList.remove('on');const h=document.documentElement;const sb=h.style.scrollBehavior;h.style.scrollBehavior='auto';document.body.classList.remove('locked');document.body.style.top='';window.scrollTo(0,lockScroll);h.style.scrollBehavior=sb;ov.removeEventListener('keydown',trapKey);if(lastFocus)lastFocus.focus({preventScroll:true});}
+function trapKey(e){if(e.key==='Escape'){closeOv(e.currentTarget);return;}if(e.key!=='Tab')return;const els=[...e.currentTarget.querySelectorAll('input,select,button,a[href]')].filter(el=>el.offsetParent!==null);if(!els.length)return;const f=els[0],l=els[els.length-1];if(e.shiftKey&&document.activeElement===f){e.preventDefault();l.focus({preventScroll:true});}else if(!e.shiftKey&&document.activeElement===l){e.preventDefault();f.focus({preventScroll:true});}}
 document.querySelectorAll('.overlay').forEach(ov=>{ov.addEventListener('mousedown',e=>{if(e.target===ov)closeOv(ov);});ov.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeOv(ov)));});
 
 function setErr(id,m){const f=document.getElementById(id);f.classList.toggle('bad',!!m);f.querySelector('.msg').textContent=m||'';}
@@ -606,22 +617,15 @@ pvSubmit.addEventListener('click',()=>{
   if(!ok)return;
   pvSubmit.disabled=true;pvSubmit.innerHTML='<span class="spinner"></span> Enviando…';
   setTimeout(()=>{
-    let msg=`Hola Cuadra, quiero mi preview gratis.\n\n`
-      +`• Nombre: ${n}\n`
-      +`• Negocio: ${ne}\n`
-      +`• Rubro: ${ru}\n`
-      +`• Objetivo: ${ob}\n`
-      +(lk?`• Web/IG actual: ${lk}\n`:``)
-      +`• WhatsApp: ${w}`;
-    if(pendingSim)msg+=`\n\nCOTIZACIÓN DEL SIMULADOR\n• ${pendingSim}`;
     document.getElementById('okName').textContent=n.split(' ')[0]||'crack';
-    document.getElementById('okWa').href=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(msg)}`;
-    document.getElementById('okMail').href=`mailto:${CONTACT.email}?subject=${encodeURIComponent('Preview gratis · '+ne)}&body=${encodeURIComponent(msg)}`;
+    const dudas=`Hola Cuadra, soy ${n}${ne?' de '+ne:''}. Tengo una duda antes de agendar mi demo.`;
+    const okWa=document.getElementById('okWa');
+    okWa.href=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(dudas)}`;
+    okWa.target='_blank';okWa.rel='noopener';
     document.getElementById('pvForm').style.display='none';document.getElementById('pvSuccess').style.display='block';
-    pvSubmit.disabled=false;pvSubmit.textContent='Enviar y ver mi preview';document.getElementById('okWa').focus();
+    pvSubmit.disabled=false;pvSubmit.textContent='Enviar y ver mi preview';document.getElementById('okSched').focus({preventScroll:true});
   },700);
 });
-document.getElementById('okMail').addEventListener('click',()=>closeOv(ovPreview));
 document.getElementById('okSched').addEventListener('click',()=>{
   const ca={a1:gv('i-negocio'),a2:gv('i-rubro'),a3:gv('i-obj'),a4:gv('i-link')||'—'};
   if(pendingSim)ca.a5=pendingSim;
@@ -684,17 +688,8 @@ document.getElementById('simSched').addEventListener('click',()=>{
   closeOv(ovSim);setTimeout(()=>openPreview(),180);
 });
 document.getElementById('simSend').addEventListener('click',()=>{
-  let o=SIM[simBase].once,m=SIM[simBase].mensual;const onceIt=[],monIt=[];
-  SIM[simBase].extras.forEach(e=>{if(simSel.has(e.id)){
-    if(e.type==='once'){o+=e.price;onceIt.push(`• ${e.label}: ${simFmt(e.price)}`);}
-    else{m+=e.price;monIt.push(`• ${e.label}: ${simFmt(e.price)}/mes`);}
-  }});
   const baseName=simBase==='info'?'Sitio informativo':'E-commerce';
-  let txt=`Hola Cuadra, esta es mi cotización simulada:\n\n`
-    +`PLAN BASE\n• ${baseName}: ${simFmt(SIM[simBase].once)} inicial + ${simFmt(SIM[simBase].mensual)}/mes\n`;
-  if(onceIt.length)txt+=`\nEXTRAS (pago único)\n`+onceIt.join('\n')+`\n`;
-  if(monIt.length)txt+=`\nEXTRAS (mensuales)\n`+monIt.join('\n')+`\n`;
-  txt+=`\nTOTAL\n• Pago inicial: ${simFmt(o)}\n• Mensualidad: ${simFmt(m)}/mes\n\nQuiero agendar una demo.`;
+  const txt=`Hola Cuadra, estaba viendo el plan ${baseName} y tengo una duda.`;
   window.open(`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(txt)}`,'_blank');
 });
 </script>
