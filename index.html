@@ -571,6 +571,7 @@ function schedUrl(pf){
   if(!pf) return u;
   const q=[];
   if(pf.name)q.push('name='+encodeURIComponent(pf.name));
+  if(pf.email)q.push('email='+encodeURIComponent(pf.email));
   const ca=pf.customAnswers||{};
   Object.keys(ca).forEach(k=>{if(ca[k])q.push(k+'='+encodeURIComponent(ca[k]));});
   if(q.length)u+=(u.indexOf('?')>-1?'&':'?')+q.join('&');
@@ -624,11 +625,12 @@ document.querySelectorAll('[data-open-preview]').forEach(b=>b.addEventListener('
 
 const pvSubmit=document.getElementById('pvSubmit');
 pvSubmit.addEventListener('click',()=>{
-  const n=gv('i-nombre'),ne=gv('i-negocio'),ru=gv('i-rubro'),ob=gv('i-obj'),lk=gv('i-link'),w=gv('i-wsp');let ok=true;
+  const n=gv('i-nombre'),ne=gv('i-negocio'),ru=gv('i-rubro'),ob=gv('i-obj'),lk=gv('i-link'),em=gv('i-email'),w=gv('i-wsp');let ok=true;
   setErr('f-nombre',n?'':'Escribe tu nombre');if(!n)ok=false;
   setErr('f-negocio',ne?'':'¿Cómo se llama tu negocio?');if(!ne)ok=false;
   setErr('f-rubro',ru?'':'Elige tu rubro');if(!ru)ok=false;
   setErr('f-obj',ob?'':'Cuéntanos qué quieres lograr');if(!ob)ok=false;
+  const emOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);setErr('f-email',emOk?'':(em?'Ese correo no se ve válido':'Déjanos tu correo'));if(!emOk)ok=false;
   const d=(w.match(/\d/g)||[]).length;setErr('f-wsp',d>=8?'':'Déjame un WhatsApp válido');if(d<8)ok=false;
   if(!ok)return;
   pvSubmit.disabled=true;pvSubmit.innerHTML='<span class="spinner"></span> Enviando…';
@@ -645,7 +647,7 @@ pvSubmit.addEventListener('click',()=>{
 document.getElementById('okSched').addEventListener('click',()=>{
   const ca={a1:gv('i-negocio'),a2:gv('i-rubro'),a3:gv('i-obj'),a4:gv('i-link')||'—'};
   if(pendingSim)ca.a5=pendingSim;
-  const pf={name:gv('i-nombre'),customAnswers:ca};
+  const pf={name:gv('i-nombre'),email:gv('i-email'),customAnswers:ca};
   closeOv(ovPreview);setTimeout(()=>openSched(pf),180);
 });
 /* ── SIMULADOR DE COTIZACIÓN ── */
