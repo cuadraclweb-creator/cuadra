@@ -592,9 +592,15 @@ async function saveContacto(row){
   const sb=getSB();
   if(!sb){console.warn('[Cuadra] Supabase no disponible, contacto no guardado:',row);return;}
   try{
-    const {error}=await sb.from('contactos').insert(row);
-    if(error)console.error('[Cuadra] error guardando contacto:',error.message||error);
-    else console.log('[Cuadra] contacto guardado ('+row.etapa+'):',row.email);
+    const {error}=await sb.rpc('upsert_contacto',{
+      p_id:row.id, p_etapa:row.etapa, p_fuente:row.fuente,
+      p_nombre:row.nombre||null, p_email:row.email||null,
+      p_whatsapp:row.whatsapp||null, p_rubro:row.rubro||null,
+      p_negocio:row.negocio||null, p_objetivo:row.objetivo||null,
+      p_web_ig:row.web_ig||null, p_simulador:row.simulador||null,
+    });
+    if(error)console.error('[Cuadra] error en upsert_contacto:',error.message||error);
+    else console.log('[Cuadra] contacto guardado/actualizado:',row.email);
   }catch(e){console.error('[Cuadra] excepción guardando contacto:',e);}
 }
 /* scheduler: al pegar tu link de Calendly (calendly.com/...) el calendario queda EMBEBIDO dentro de la web. */
