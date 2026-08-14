@@ -576,6 +576,27 @@
   </div>
 </div>
 
+<!-- EXIT-INTENT -->
+<div class="overlay" id="ovExit" role="dialog" aria-modal="true" aria-labelledby="exitTitle">
+  <div class="modal modal-info">
+    <button class="x" data-close aria-label="Cerrar">×</button>
+    <div class="m-tag">Preview gratis · 48h</div>
+    <h3 id="exitTitle">¿Vemos cómo se vería tu negocio?</h3>
+    <p class="m-sub">Déjanos tus datos y te mostramos un preview sin compromiso.</p>
+    <div id="exitForm">
+      <div class="field" id="ex-f-nombre"><label for="ex-nombre">Nombre <span class="req">*</span></label><input id="ex-nombre" type="text" autocomplete="name" placeholder="Tu nombre"><div class="msg" aria-live="polite"></div></div>
+      <div class="field" id="ex-f-wsp"><label for="ex-wsp">WhatsApp <span class="req">*</span></label><input id="ex-wsp" type="tel" inputmode="tel" placeholder="+56 9 ..."><div class="msg" aria-live="polite"></div></div>
+      <div class="field" id="ex-f-rubro"><label for="ex-rubro">Rubro <span class="req">*</span></label><select id="ex-rubro"><option value="">Elige uno…</option><option>Salud / Dental</option><option>Belleza / Estética</option><option>Legal / Contable</option><option>Construcción / Remodelación</option><option>Restaurante / Café</option><option>Comercio / Tienda</option><option>Otros servicios</option></select><div class="msg" aria-live="polite"></div></div>
+      <button class="submit" id="exitSubmit">Ver mi preview gratis</button>
+    </div>
+    <div id="exitSuccess" class="success" style="display:none">
+      <div class="tick">✓</div>
+      <h3>¡Perfecto, <span id="exitOkName">crack</span>!</h3>
+      <p>Te contactamos para mostrarte tu preview. ¿Quieres agendar ya?</p>
+      <button class="submit" id="exitSched" style="margin-top:12px">Agendar ahora →</button>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -603,6 +624,22 @@ async function saveContacto(row){
     else console.log('[Cuadra] contacto guardado/actualizado:',row.email);
   }catch(e){console.error('[Cuadra] excepción guardando contacto:',e);}
 }
+function getDispo(){return window.innerWidth<768?'mobile':'desktop';}
+function getFuente(){
+  const u=new URLSearchParams(window.location.search);
+  if(u.get('utm_source'))return u.get('utm_source');
+  const r=document.referrer;
+  if(r.includes('instagram.com'))return 'instagram';
+  if(r.includes('google.com'))return 'google';
+  if(r.includes('wa.me')||r.includes('whatsapp'))return 'whatsapp';
+  if(!r||r.startsWith(location.origin))return 'direct';
+  return 'other';
+}
+async function trackEvento(tipo,meta){
+  const sb=getSB();if(!sb)return;
+  try{await sb.from('eventos').insert({tipo,fuente:getFuente(),dispositivo:getDispo(),metadata:meta||null});}
+  catch(e){}
+}
 /* scheduler: al pegar tu link de Calendly (calendly.com/...) el calendario queda EMBEBIDO dentro de la web. */
 /* scheduler: pega tu link de Google Calendar (Citas) o Calendly y aparece el calendario para agendar. */
 /* ═══ fin ═══ */
@@ -611,6 +648,7 @@ const waDudas=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Hola
 document.getElementById('ctaWa').href=waDudas;
 document.getElementById('footWa').href=waDudas;
 document.getElementById('footMail').href=`mailto:${CONTACT.email}`;
+trackEvento('page_view');
 
 const hamb=document.getElementById('hamb'),navlinks=document.getElementById('navlinks');
 function scrollToId(id){if(id==='top'){window.scrollTo({top:0,behavior:'smooth'});return;}const el=document.getElementById(id);if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-70,behavior:'smooth'});}
@@ -619,6 +657,8 @@ hamb.addEventListener('click',()=>{const o=navlinks.classList.toggle('open');ham
 
 const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const priceEl=document.getElementById('precios');
+if(priceEl){let priceSeen=false;const pio=new IntersectionObserver(es=>{if(!priceSeen&&es[0].isIntersecting){priceSeen=true;trackEvento('pricing_view');}},{threshold:.3});pio.observe(priceEl);}
 
 /* "?" abre un modal (no empuja el contenido) */
 function bindQmark(q){
@@ -658,6 +698,7 @@ function schedUrl(pf){
   return u;
 }
 function openSched(prefill){
+  trackEvento('sched_open');
   const box=document.getElementById('schEmbed');
   const sc=CONTACT.scheduler;
   const waHref=`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Hola Cuadra, quiero agendar una demo gratis para ver un preview de mi sitio.')}`;
@@ -694,6 +735,7 @@ function warmCalendly(){
 }
 function openPreview(){
   warmCalendly();
+  trackEvento('form_open');
   document.getElementById('pvForm').style.display='block';
   document.getElementById('pvSuccess').style.display='none';
   const note=document.getElementById('pvSimNote');
@@ -716,6 +758,7 @@ pvSubmit.addEventListener('click',()=>{
   const leadId=(window.crypto&&crypto.randomUUID?crypto.randomUUID():'lead_'+Date.now());
   window.__cuadraPreviewId=leadId;
   saveContacto({id:leadId,etapa:'lead',fuente:'preview',nombre:n,email:em,whatsapp:w,rubro:ru,negocio:ne,objetivo:ob,web_ig:lk||null,simulador:pendingSim||null});
+  trackEvento('form_submit',{rubro:ru});
   pvSubmit.disabled=true;pvSubmit.innerHTML='<span class="spinner"></span> Enviando…';
   setTimeout(()=>{
     document.getElementById('okName').textContent=n.split(' ')[0]||'crack';
@@ -750,6 +793,7 @@ function saveMiniLead(lead){
     if(!ok)return;
     const lead={id:(window.crypto&&crypto.randomUUID?crypto.randomUUID():'lead_'+Date.now()),nivel:1,fuente:'mini-form',nombre:n,rubro:ru,whatsapp:w,email:em,ts:new Date().toISOString()};
     saveMiniLead(lead);
+    trackEvento('mini_submit',{rubro:ru});
     document.getElementById('mlOkName').textContent=n.split(' ')[0]||'crack';
     document.getElementById('mlForm').style.display='none';
     document.getElementById('mlSuccess').style.display='block';
@@ -799,6 +843,7 @@ document.querySelectorAll('#simBase .cz-base').forEach(c=>c.addEventListener('cl
 const ovSim=document.getElementById('ovSim');
 function openSim(){
   warmCalendly();
+  trackEvento('sim_open');
   simBase='info';simSel=new Set();
   document.querySelectorAll('#simBase .cz-base').forEach(x=>{const on=x.dataset.base==='info';x.classList.toggle('sel',on);x.setAttribute('aria-pressed',on);});
   simRender();simCompute();openOv(ovSim);
@@ -847,6 +892,37 @@ document.getElementById('simSend').addEventListener('click',()=>{
   const txt=`Hola Cuadra, estaba viendo el plan ${baseName} y tengo una duda.`;
   window.open(`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(txt)}`,'_blank');
 });
+/* ── EXIT-INTENT ── */
+(function(){
+  const ovE=document.getElementById('ovExit');
+  let shown=false;
+  function showEI(){
+    if(shown||sessionStorage.getItem('cuadra_ei'))return;
+    shown=true;sessionStorage.setItem('cuadra_ei','1');
+    trackEvento('exit_intent_show');
+    openOv(ovE);
+  }
+  document.addEventListener('mouseleave',e=>{if(e.clientY<0)showEI();});
+  if(window.innerWidth<768)setTimeout(showEI,50000);
+  const exBtn=document.getElementById('exitSubmit');
+  exBtn.addEventListener('click',()=>{
+    const n=gv('ex-nombre'),w=gv('ex-wsp'),ru=gv('ex-rubro');let ok=true;
+    setErr('ex-f-nombre',n?'':'Escribe tu nombre');if(!n)ok=false;
+    const d=(w.match(/\d/g)||[]).length;setErr('ex-f-wsp',d>=8?'':'WhatsApp válido');if(d<8)ok=false;
+    setErr('ex-f-rubro',ru?'':'Elige tu rubro');if(!ru)ok=false;
+    if(!ok)return;
+    const id=(window.crypto&&crypto.randomUUID?crypto.randomUUID():'ei_'+Date.now());
+    saveContacto({id,etapa:'lead',fuente:'exit-intent',nombre:n,whatsapp:w,rubro:ru});
+    trackEvento('exit_submit',{rubro:ru});
+    document.getElementById('exitOkName').textContent=n.split(' ')[0]||'crack';
+    document.getElementById('exitForm').style.display='none';
+    document.getElementById('exitSuccess').style.display='block';
+  });
+  document.getElementById('exitSched').addEventListener('click',()=>{
+    const pf={name:gv('ex-nombre')};
+    closeOv(ovE);setTimeout(()=>openSched(pf),180);
+  });
+})();
 </script>
 </body>
 </html>
