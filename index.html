@@ -709,7 +709,7 @@ pvSubmit.addEventListener('click',()=>{
   if(!ok)return;
   const leadId=(window.crypto&&crypto.randomUUID?crypto.randomUUID():'lead_'+Date.now());
   window.__cuadraPreviewId=leadId;
-  saveContacto({id:leadId,etapa:'preview',fuente:'preview',nombre:n,email:em,whatsapp:w,rubro:ru,negocio:ne,objetivo:ob,web_ig:lk||null,simulador:pendingSim||null});
+  saveContacto({id:leadId,etapa:'lead',fuente:'preview',nombre:n,email:em,whatsapp:w,rubro:ru,negocio:ne,objetivo:ob,web_ig:lk||null,simulador:pendingSim||null});
   pvSubmit.disabled=true;pvSubmit.innerHTML='<span class="spinner"></span> Enviando…';
   setTimeout(()=>{
     document.getElementById('okName').textContent=n.split(' ')[0]||'crack';
