@@ -578,9 +578,25 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ═══ ZONA EDITABLE ═══ */
 const CONTACT={ whatsapp:"56975491557", email:"cuadra.cl.web@gmail.com", instagram:"https://instagram.com/tu_cuenta", scheduler:"https://calendly.com/cuadra-cl-web/30min" };
+
+/* ── SUPABASE (captura de leads) ── */
+const SUPABASE_URL="https://cngmlxirqbbeuipygxrz.supabase.co";
+const SUPABASE_KEY="sb_publishable_TsfuPG5Cv73ycc3v6jjbgw_OFQRW98Z";
+let _sb=null;
+function getSB(){try{if(_sb)return _sb;if(!window.supabase)return null;_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);return _sb;}catch(e){console.error('[Cuadra] Supabase init falló:',e);return null;}}
+async function saveContacto(row){
+  const sb=getSB();
+  if(!sb){console.warn('[Cuadra] Supabase no disponible, contacto no guardado:',row);return;}
+  try{
+    const {error}=await sb.from('contactos').insert(row);
+    if(error)console.error('[Cuadra] error guardando contacto:',error.message||error);
+    else console.log('[Cuadra] contacto guardado ('+row.etapa+'):',row.email);
+  }catch(e){console.error('[Cuadra] excepción guardando contacto:',e);}
+}
 /* scheduler: al pegar tu link de Calendly (calendly.com/...) el calendario queda EMBEBIDO dentro de la web. */
 /* scheduler: pega tu link de Google Calendar (Citas) o Calendly y aparece el calendario para agendar. */
 /* ═══ fin ═══ */
@@ -691,6 +707,9 @@ pvSubmit.addEventListener('click',()=>{
   const emOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);setErr('f-email',emOk?'':(em?'Ese correo no se ve válido':'Déjanos tu correo'));if(!emOk)ok=false;
   const d=(w.match(/\d/g)||[]).length;setErr('f-wsp',d>=8?'':'Déjame un WhatsApp válido');if(d<8)ok=false;
   if(!ok)return;
+  const leadId=(window.crypto&&crypto.randomUUID?crypto.randomUUID():'lead_'+Date.now());
+  window.__cuadraPreviewId=leadId;
+  saveContacto({id:leadId,etapa:'preview',fuente:'preview',nombre:n,email:em,whatsapp:w,rubro:ru,negocio:ne,objetivo:ob,web_ig:lk||null,simulador:pendingSim||null});
   pvSubmit.disabled=true;pvSubmit.innerHTML='<span class="spinner"></span> Enviando…';
   setTimeout(()=>{
     document.getElementById('okName').textContent=n.split(' ')[0]||'crack';
@@ -712,8 +731,7 @@ document.getElementById('okSched').addEventListener('click',()=>{
 window.__cuadraLeads=window.__cuadraLeads||[];
 function saveMiniLead(lead){
   window.__cuadraLeads.push(lead);
-  console.log('[Cuadra] lead capturado (pendiente de Supabase):',lead);
-  /* TODO admin: aquí conectamos el insert a la tabla de leads en Supabase */
+  saveContacto({id:lead.id,etapa:'lead',fuente:'mini-form',nombre:lead.nombre,email:lead.email,whatsapp:lead.whatsapp,rubro:lead.rubro});
 }
 (function(){
   const btn=document.getElementById('mlSubmit');if(!btn)return;
