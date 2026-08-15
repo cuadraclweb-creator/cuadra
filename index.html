@@ -19,6 +19,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;background:var(--navy);}
   body{background:var(--paper);color:var(--navy);font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#14223E;z-index:9999;}
   body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden;background:var(--navy);}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
   h1,h2,h3,h4,.display{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;line-height:1.03;}
