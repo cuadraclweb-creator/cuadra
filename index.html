@@ -412,7 +412,7 @@
           <li><span class="ck">✓</span><span>1 ajuste menor al mes incluido</span></li>
         </ul>
         <div style="flex:1"></div>
-        <button class="btn btn-soft" data-open-preview>Agendar demo gratis</button>
+        <button class="btn btn-soft" data-open-preview data-plan="Express">Agendar demo gratis</button>
       </div>
 
       <!-- INFORMATIVO -->
@@ -439,7 +439,7 @@
           <div class="ai reco"><span class="pl">+</span><span>Optimización en Google <span class="star" aria-label="lo más importante" title="Lo más clave">★</span> <span class="qmark" role="button" tabindex="0" aria-label="Qué es la optimización en Google">?</span><span class="tip" hidden>¿Sabes cuando buscas algo en Google y eliges uno de los primeros que aparecen? Casi nadie pasa a la segunda página. Esto (en corto, SEO) es el trabajo de dejar tu negocio arriba en esas búsquedas de tu zona, por ejemplo "dentista en Providencia", para que te encuentren justo cuando te están buscando. Es la forma más rentable de recibir clientes nuevos: a diferencia de la publicidad, no pagas por cada clic y el efecto se acumula mes a mes. Nos encargamos de todo (tu sitio, tus textos y tu Perfil de Google) y cada mes te mostramos con números reales cuánta gente te encontró, te llamó o te escribió. Con que llegue un cliente nuevo al mes, ya se paga solo.</span></span></div>
         </div>
         <p class="adds-note">Los valores de los extras los vemos en tu demo.</p>
-        <button class="btn btn-coral" data-open-preview>Agendar demo gratis</button>
+        <button class="btn btn-coral" data-open-preview data-plan="Informativo">Agendar demo gratis</button>
       </div>
 
       <!-- E-COMMERCE -->
@@ -464,7 +464,7 @@
           <div class="ai reco"><span class="pl">+</span><span>Optimización en Google <span class="star" aria-label="lo más importante" title="Lo más clave">★</span> <span class="qmark" role="button" tabindex="0" aria-label="Qué es la optimización en Google">?</span><span class="tip" hidden>¿Sabes cuando buscas algo en Google y eliges uno de los primeros que aparecen? Casi nadie pasa a la segunda página. Esto (en corto, SEO) es el trabajo de dejar tu negocio arriba en esas búsquedas de tu zona, por ejemplo "dentista en Providencia", para que te encuentren justo cuando te están buscando. Es la forma más rentable de recibir clientes nuevos: a diferencia de la publicidad, no pagas por cada clic y el efecto se acumula mes a mes. Nos encargamos de todo (tu sitio, tus textos y tu Perfil de Google) y cada mes te mostramos con números reales cuánta gente te encontró, te llamó o te escribió. Con que llegue un cliente nuevo al mes, ya se paga solo.</span></span></div>
         </div>
         <p class="adds-note">Los valores de los extras los vemos en tu demo.</p>
-        <button class="btn btn-coral" data-open-preview>Agendar demo gratis</button>
+        <button class="btn btn-coral" data-open-preview data-plan="E-commerce">Agendar demo gratis</button>
       </div>
 
     </div>
@@ -762,11 +762,11 @@ function openPreview(){
   document.getElementById('pvForm').style.display='block';
   document.getElementById('pvSuccess').style.display='none';
   const note=document.getElementById('pvSimNote');
-  if(pendingSim){note.innerHTML='Tu cotización del simulador: <b>'+pendingSim+'</b>. La incluimos en tu demo.';note.style.display='block';}
+  if(pendingSim){const isPlan=pendingSim.startsWith('Plan ');note.innerHTML=(isPlan?'Plan elegido: ':'Tu cotización: ')+'<b>'+pendingSim+'</b>. Lo vemos en tu demo.';note.style.display='block';}
   else{note.style.display='none';}
   openOv(ovPreview);
 }
-document.querySelectorAll('[data-open-preview]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();pendingSim=null;openPreview();navlinks.classList.remove('open');hamb.setAttribute('aria-expanded','false');}));
+document.querySelectorAll('[data-open-preview]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();pendingSim=b.dataset.plan?`Plan ${b.dataset.plan}`:null;openPreview();navlinks.classList.remove('open');hamb.setAttribute('aria-expanded','false');}));
 
 const pvSubmit=document.getElementById('pvSubmit');
 pvSubmit.addEventListener('click',()=>{
@@ -828,6 +828,10 @@ const SIM={
   express:{once:120000,mensual:39990,extras:[
     {id:'brand',label:'Diseño de marca y logo',type:'once',price:650000},
     {id:'wa',label:'Botón de WhatsApp y formulario',type:'once',price:30000},
+    {id:'res',label:'Integración de reservas / agenda',type:'once',price:150000},
+    {id:'textos',label:'Textos y fotos profesionales',type:'once',price:70000},
+    {id:'ia',label:'Asistente con IA',type:'mensual',price:50000,setup:199990},
+    {id:'seo',label:'Optimización en Google',type:'mensual',price:250000},
   ]},
   info:{once:390000,mensual:99990,extras:[
     {id:'brand',label:'Diseño de marca y logo',type:'once',price:650000},
