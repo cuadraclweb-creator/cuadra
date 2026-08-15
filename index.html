@@ -19,7 +19,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;background:var(--navy);}
   body{background:var(--paper);color:var(--navy);font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
-  body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#14223E;z-index:9999;}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#14223E;z-index:9999;will-change:transform;transform:translateZ(0);}
   body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden;background:var(--navy);}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
   h1,h2,h3,h4,.display{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;line-height:1.03;}
@@ -627,6 +627,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* iOS status bar — fuerza reevaluación del color al segundo frame */
+(function(){var r=requestAnimationFrame||function(f){setTimeout(f,16);};r(function(){r(function(){var m=document.querySelector('meta[name="theme-color"]');if(m){var c=m.content;m.content='#14223D';m.content=c;}});});})();
+
 /* ═══ ZONA EDITABLE ═══ */
 const CONTACT={ whatsapp:"56975491557", email:"cuadra.cl.web@gmail.com", instagram:"https://instagram.com/tu_cuenta", scheduler:"https://calendly.com/cuadra-cl-web/30min" };
 
