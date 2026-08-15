@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14223E">
+<title>Cuadra · Planes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14223E; --navy-2:#1C3055; --paper:#F7F4EC; --white:#FCFBF7;
+    --coral:#F04E2A; --coral-deep:#C63C1B; --sand:#EAE0CC; --line:#E0D8C6;
+    --muted:#6E6858; --muted-navy:#93A2C0; --ok:#1a7a4f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Hanken Grotesk',system-ui,sans-serif;
+    background:var(--paper); color:var(--navy);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    padding:40px 20px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;}
+
+  /* Header */
+  header{text-align:center;margin-bottom:32px;}
+  .brand{display:inline-flex;align-items:center;gap:9px;margin-bottom:14px;}
+  .brand-name{font-family:'Bricolage Grotesque';font-weight:800;font-size:24px;letter-spacing:-.01em;}
+  h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(26px,4vw,36px);line-height:1.08;letter-spacing:-.02em;}
+  h1 .hl{color:var(--coral);}
+  .sub{color:var(--muted);font-size:16px;margin-top:8px;}
+
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
+
+  .card{
+    background:var(--white);border:1px solid var(--line);border-radius:18px;
+    padding:26px 22px;display:flex;flex-direction:column;position:relative;
+  }
+  .card.star{border:2px solid var(--coral);box-shadow:0 18px 44px rgba(240,78,42,.14);}
+  .ribbon{
+    position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    background:var(--coral);color:#fff;font-family:'Bricolage Grotesque';font-weight:700;
+    font-size:12px;letter-spacing:.02em;padding:5px 14px;border-radius:999px;white-space:nowrap;
+  }
+  .plan-name{font-family:'Bricolage Grotesque';font-weight:700;font-size:20px;margin-bottom:3px;}
+  .plan-for{color:var(--muted);font-size:13.5px;min-height:38px;margin-bottom:16px;}
+
+  .price{border-top:1px solid var(--line);padding-top:16px;margin-bottom:16px;}
+  .price .once{font-size:13px;color:var(--muted);}
+  .price .once b{color:var(--navy);font-weight:700;}
+  .price .mo{font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;letter-spacing:-.02em;margin-top:2px;}
+  .price .mo span{font-family:'Hanken Grotesk';font-size:15px;font-weight:500;color:var(--muted);}
+  .price .alt{font-size:12.5px;color:var(--coral-deep);margin-top:6px;font-weight:600;}
+
+  ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:8px;}
+  li{position:relative;padding-left:24px;font-size:14px;color:var(--navy);}
+  li::before{
+    content:"";position:absolute;left:0;top:3px;width:15px;height:15px;border-radius:50%;
+    background:var(--ok);
+    -webkit-mask:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/10px no-repeat;
+    mask:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2020/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/10px no-repeat;
+  }
+  li.plus::before{background:var(--coral);}
+  .inc-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;}
+
+  /* Footer */
+  .note{
+    margin-top:26px;background:var(--navy);color:var(--paper);border-radius:16px;
+    padding:22px 26px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between;
+  }
+  .note .big{font-family:'Bricolage Grotesque';font-weight:700;font-size:16px;line-height:1.35;}
+  .note .big .hl{color:var(--coral);}
+  .note .wa{
+    display:inline-flex;align-items:center;gap:9px;background:var(--coral);color:#fff;
+    font-family:'Bricolage Grotesque';font-weight:700;font-size:15px;padding:11px 20px;border-radius:11px;
+    text-decoration:none;white-space:nowrap;
+  }
+  .fine{margin-top:16px;color:var(--muted);font-size:11.5px;line-height:1.5;text-align:center;}
+
+  @media (max-width:820px){
+    .grid{grid-template-columns:1fr;}
+    .plan-for{min-height:0;}
+    body{padding:28px 16px;}
+  }
+
+  @media print{
+    body{padding:0;background:#fff;}
+    .card.star{box-shadow:none;}
+    .note{background:#14223E !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    li::before,.card.star,.ribbon,.note .wa{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <rect x="0" y="0" width="11" height="11" rx="3" fill="#14223E"/>
+        <circle cx="20.5" cy="5.5" r="5.5" fill="#F04E2A"/>
+        <rect x="0" y="15" width="11" height="11" rx="3" fill="#14223E"/>
+        <rect x="15" y="15" width="11" height="11" rx="3" fill="#14223E"/>
+      </svg>
+      <span class="brand-name">Cuadra</span>
+    </div>
+    <h1>Planes para que tu negocio <span class="hl">exista y venda online</span></h1>
+    <p class="sub">Elige según lo que necesitas hoy. Puedes subir de plan cuando quieras.</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- EXPRESS -->
+    <div class="card">
+      <div class="plan-name">Express</div>
+      <div class="plan-for">Para estar presente online, simple y económico.</div>
+      <div class="price">
+        <div class="once">Desde <b>$120.000</b> inicial</div>
+        <div class="mo">$39.990 <span>/mes</span></div>
+        <div class="alt">o sin costo inicial a $59.990/mes</div>
+      </div>
+      <ul>
+        <li>Sitio de <b>1 página</b> a partir de plantilla</li>
+        <li>Hosting, SSL y monitoreo (siempre online)</li>
+        <li>1 ajuste menor al mes incluido</li>
+      </ul>
+    </div>
+
+    <!-- INFORMATIVO -->
+    <div class="card star">
+      <div class="ribbon">El más elegido</div>
+      <div class="plan-name">Informativo</div>
+      <div class="plan-for">Para que te encuentren en Google y te elijan a ti.</div>
+      <div class="price">
+        <div class="once">Desde <b>$390.000</b> inicial</div>
+        <div class="mo">$99.990 <span>/mes</span></div>
+      </div>
+      <ul>
+        <li>Sitio <b>a medida de hasta 6 secciones</b> (no plantilla)</li>
+        <li><b>Actualizaciones todos los meses:</b> textos, fotos, precios y promos</li>
+        <li>Perfil de Empresa en <b>Google gestionado</b></li>
+        <li>Botón de WhatsApp + formulario de contacto</li>
+        <li><b>Reporte mensual:</b> visitas y clics a WhatsApp</li>
+        <li>Optimización para aparecer en Google</li>
+        <li>Soporte prioritario</li>
+      </ul>
+    </div>
+
+    <!-- ECOMMERCE -->
+    <div class="card">
+      <div class="plan-name">E-commerce</div>
+      <div class="plan-for">Para vender online con tu propia tienda.</div>
+      <div class="price">
+        <div class="once">Desde <b>$890.000</b> inicial</div>
+        <div class="mo">$169.990 <span>/mes</span></div>
+      </div>
+      <div class="inc-label">Todo lo del Informativo, más:</div>
+      <ul>
+        <li class="plus">Tienda online (catálogo + carrito)</li>
+        <li class="plus">Medios de pago y despacho</li>
+        <li class="plus">Reseñas de productos</li>
+        <li class="plus">Pop-up de descuentos + captura de correos</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <div class="big">Tu sitio es <span class="hl">tuyo desde el día 1</span>.<br>Te mostramos un preview gratis antes de que pagues un peso.</div>
+    <a class="wa" href="https://wa.me/56975491557">Pide tu preview gratis →</a>
+  </div>
+
+  <p class="fine">
+    Los valores parten "desde" y se ajustan según el proyecto. El dominio y algunos servicios de terceros (por ejemplo, la pasarela de pago del e-commerce) los paga el cliente por su cuenta. Informativo incluye hasta 4 pedidos de cambios al mes; adicionales o rediseños se cotizan aparte.
+  </p>
+
+</div>
+</body>
+</html>
